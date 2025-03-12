@@ -1,0 +1,24 @@
+# Dependências do Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+*.tmp.js
+
+# Logs
+*.log
+logs/
+log/
+
+# Arquivos temporários
+tmp/
+*.tmp
+
+# Variáveis de ambiente
+.env
+
+# Banco de dados (se for SQLite)
+database/*.db
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
