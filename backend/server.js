@@ -1,7 +1,11 @@
 const express = require('express');
+const cors = require('cors');
+const mysql = require('mysql2');
+
 const app = express();
 app.use(express.json());
-const mysql = require('mysql2');
+app.use(cors());
+
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -13,7 +17,7 @@ app.post('/contatos', (req, res) => {
     const { nome, telefone, email } = req.body;
     connection.query('CALL pAdicionarContato(?, ?, ?)', [nome, telefone, email], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(500).send(err);
             return;
         }
         res.send({ message: 'Contato adicionado' });
@@ -23,7 +27,7 @@ app.post('/contatos', (req, res) => {
 app.get('/contatos', (req, res) => {
     connection.query('CALL pListarContato()', (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(500).send(err);
             return;
         }
         res.json(result[0]);
@@ -33,21 +37,21 @@ app.get('/contatos', (req, res) => {
 app.put('/contatos/:id', (req, res) => {
     const { id } = req.params;
     const { nome, telefone, email } = req.body;
-    connection.query(`CALL pAtualizarContato(${id, nome, telefone, email})`, (err, result) => {
+    console.log("Atualizando contato:", id, nome, telefone, email);
+    connection.query(`CALL pAtualizarContato(${id}, ?, ?, ?)`, [nome, telefone, email], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(500).send(err);
             return;
         }
         res.send({ message: 'Contato atualizado com sucesso!' });
     });
-    console.log("Atualizando contato:", id, nome, telefone, email);
 });
 
 app.delete('/contatos/:id', (req, res) => {
     const { id } = req.params;
     connection.query(`CALL pDeletarContato(${id})`, (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(500).send(err);
             return;
         }
         res.send({ message: 'Contato deletado com sucesso!' });
